@@ -52,7 +52,8 @@ namespace Payroll_Server
             endpoints.MapControllers();
             endpoints.MapGet("/", (HttpContext context) =>
             {
-               Database.Connect();
+               // Database.Connect();
+               Database.Sql("SELECT * FROM employee_roles");
                return context.Response.WriteAsync("table created");
             });
          });

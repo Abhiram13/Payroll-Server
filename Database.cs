@@ -6,19 +6,17 @@ namespace Payroll_Server
 {
    static class Database
    {
-      public static void Connect()
-      {
-         string cs = "Host=localhost;Username=postgres;Password=123;Database=postgres";
+      private static string cs = "Host=localhost;Username=postgres;Password=123;Database=postgres";
 
+      public static void Sql(string query)
+      {
          using NpgsqlConnection connection = new NpgsqlConnection(cs);
          connection.Open();
 
          using NpgsqlCommand cmd = new NpgsqlCommand();
          cmd.Connection = connection;
 
-         // cmd.CommandText = "INSERT INTO employee_roles(role) VALUES('Admin')";
-
-         cmd.CommandText = "SELECT * FROM employee_roles";
+         cmd.CommandText = query;
          NpgsqlDataReader reader = cmd.ExecuteReader();
          while (reader.Read())
          {
