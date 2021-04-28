@@ -2,6 +2,7 @@ namespace Payroll_Server
 {
    static class Table
    {
-      public const string E_ROlE = "employee_roles";
+      public const string ROLES = "roles";
+      public const string EMPLOYEE = "employee";
    }
 }

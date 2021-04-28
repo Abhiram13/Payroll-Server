@@ -7,7 +7,7 @@ namespace Payroll_Server
 {
    class Roles
    {
-      public static string Employee(NpgsqlDataReader reader)
+      public static string fetchAll(NpgsqlDataReader reader)
       {
          List<string> list = new List<string>();
 

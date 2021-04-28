@@ -58,7 +58,7 @@ namespace Payroll_Server
 
             endpoints.MapGet("/employee/roles/all", (HttpContext context) => 
             {
-               return context.Response.WriteAsync(Database.Sql($"SELECT * FROM {Table.E_ROlE}", Roles.Employee));
+               return context.Response.WriteAsync(Database.Sql($"SELECT * FROM {Table.ROLES}", Roles.fetchAll));
             });
          });
       }
