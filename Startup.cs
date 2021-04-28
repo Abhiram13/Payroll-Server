@@ -22,8 +22,7 @@ namespace Payroll_Server
 
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
-      {
-
+      {          
          services.AddControllers();
          services.AddSwaggerGen(c =>
          {
@@ -45,14 +44,16 @@ namespace Payroll_Server
 
          app.UseRouting();
 
-         app.UseAuthorization();
+         app.UseMvc();
+
+         app.UseAuthorization();         
 
          app.UseEndpoints(endpoints =>
          {
             endpoints.MapControllers();
             endpoints.MapGet("/", (HttpContext context) =>
             {
-               return context.Response.WriteAsync(Database.Sql("SELECT * FROM demo", Database.readData));
+               return context.Response.WriteAsync("Welcome to Payroll");
             });
 
             endpoints.MapGet("/employee/roles/all", (HttpContext context) => 

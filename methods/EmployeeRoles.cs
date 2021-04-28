@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Payroll_Server
 {
-   static class Roles
+   class Roles
    {
       public static string Employee(NpgsqlDataReader reader)
       {
