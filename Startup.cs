@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Employee;
+using Database;
 using Npgsql;
 
 namespace Payroll_Server
@@ -57,8 +59,8 @@ namespace Payroll_Server
             });
 
             endpoints.MapGet("/employee/roles/all", (HttpContext context) => 
-            {
-               return context.Response.WriteAsync(Database.Sql($"SELECT * FROM {Table.ROLES}", Roles.fetchAll));
+            {               
+               return context.Response.WriteAsync(Connection.Sql($"SELECT * FROM {Table.ROLES}", Roles.fetchAll));
             });
          });
       }

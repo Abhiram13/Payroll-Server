@@ -1,4 +1,4 @@
-namespace Payroll_Server
+namespace Database
 {
    static class Table
    {

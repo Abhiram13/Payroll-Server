@@ -3,7 +3,7 @@ using Npgsql;
 using System.Text.Json;
 using System.Collections.Generic;
 
-namespace Payroll_Server
+namespace Employee
 {
    class Roles
    {
