@@ -52,10 +52,12 @@ namespace Payroll_Server
             endpoints.MapControllers();
             endpoints.MapGet("/", (HttpContext context) =>
             {
-               // Database.Connect();
-               // Database.Sql("SELECT * FROM demo");
-               // Database.Sql("INSERT INTO demo(id, word) VALUES(79, 'word')");
                return context.Response.WriteAsync(Database.Sql("SELECT * FROM demo", Database.readData));
+            });
+
+            endpoints.MapGet("/employee/roles/all", (HttpContext context) => 
+            {
+               return context.Response.WriteAsync(Database.Sql($"SELECT * FROM {Table.E_ROlE}", Roles.Employee));
             });
          });
       }
