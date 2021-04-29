@@ -1,5 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Payroll_Server
 {
@@ -8,8 +10,15 @@ namespace Payroll_Server
    {
       [HttpGet]
       [HttpPost]
-      public string method()
+      [HttpPut]
+      [HttpDelete]
+      public async Task<string> method()
       {
+         using (StreamReader reader = new StreamReader(Request.Body))
+         {
+            string body = await reader.ReadToEndAsync();
+            Console.WriteLine(body);
+         }         
          return "Welcome to Payroll";
       }
 
