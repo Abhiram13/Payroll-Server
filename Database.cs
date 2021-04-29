@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace Database
 {
-   public delegate string Reader(NpgsqlDataReader reader);
+   public delegate ReturnType Reader<ReturnType>(NpgsqlDataReader reader);
 
    public class Connection
    {
       private static string connectionString = "Host=localhost;Username=postgres;Password=123;Database=postgres";      
 
-      public static string Sql(string query, Reader function)
+      public static Type Sql<Type>(string query, Reader<Type> function)
       {         
          using NpgsqlConnection connection = new NpgsqlConnection(connectionString);
          connection.Open();

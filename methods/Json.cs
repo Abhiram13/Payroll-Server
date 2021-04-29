@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace System
 {
-   public static class Json
+   public static class JSON
    {
       /// <summary>
       /// Converts Http Request body to System.object
