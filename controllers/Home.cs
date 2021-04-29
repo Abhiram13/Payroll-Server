@@ -11,30 +11,16 @@ namespace Payroll_Server
 {
    [Route("")]
    public class HomeController : Controller
-   {
-      [HttpGet]
-      [HttpPost]
-      [HttpPut]
-      [HttpDelete]
-      public async Task<string> method()
-      {
-         using (StreamReader reader = new StreamReader(Request.Body))
-         {
-            string body = await reader.ReadToEndAsync();
-            Console.WriteLine(body);
-         }     
-         return "Welcome to Payroll";
-      }
+   {      
+      [HttpDelete][HttpPut][HttpPost][HttpGet]
+      public string Method() => "Welcome to Payroll";
 
       [HttpPost]
       [Route("login")]
-      public void login() { }
+      public void Login() { }
 
       [HttpPost]
       [Route("signup")]
-      public async Task<string> signup()
-      {
-         return await EmployeeController.AddEmployee(Request);
-      }
+      public async Task<string> Signup() => await EmployeeController.AddEmployee(Request);
    }
 }

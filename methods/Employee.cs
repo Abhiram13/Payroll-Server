@@ -56,7 +56,14 @@ namespace NEmployee
          {
             List<long> list = new List<long>();
 
-            while (reader.Read()) list.Add((long)reader[0]);
+            while (reader.Read())
+            {
+               if (emp.id == (long)reader[0])
+               {
+                  list.Add((long)reader[0]);
+               }
+            }
+
             return list.Count;
          }
 
@@ -67,8 +74,8 @@ namespace NEmployee
             return "Employee already Existed";
          }
 
-         string values = $"'{emp.first_name}', '{emp.last_name}', '{emp.designation}', '{emp.email}', {emp.mobile}, {emp.id}, {emp.supervisor}, '{emp.password}', '{emp.user_name}'";
-         string keys = "first_name, last_name, designation, email, mobile, id, supervisor, password, user_name";
+         string values = OBJECT.GetValues<Employee>(emp);
+         string keys = OBJECT.GetKeys<Employee>(emp);
 
          return Connection.Sql<string>($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", func);
       }

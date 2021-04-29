@@ -51,19 +51,6 @@ namespace Payroll_Server
          app.UseEndpoints(endpoints =>
          {
             endpoints.MapControllers();
-
-            // endpoints.MapGet("/employee/roles/all", (HttpContext context) => 
-            // {               
-            //    return context.Response.WriteAsync(Connection.Sql($"SELECT * FROM {Table.ROLES}", Roles.fetchAll));
-            // });
-
-            // endpoints.MapPost("/employee/add", async (HttpContext context) =>
-            // {
-            //    EmployeeController controller = new EmployeeController(context);
-            //    string keys = controller.keys();
-            //    string values = await controller.values();
-            //    await context.Response.WriteAsync(Connection.Sql($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", EmployeeController.check));
-            // });
          });
       }
    }
