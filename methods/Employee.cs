@@ -2,8 +2,12 @@ using System;
 using Npgsql;
 using System.Text.Json;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using System.IO;
+using NEmployee;
+using Database;
 
 namespace NEmployee
 {
@@ -37,27 +41,36 @@ namespace NEmployee
 
    class EmployeeController
    {
-      Task<Employee> employee;
-      public EmployeeController(HttpContext context)
+      public static async Task<string> AddEmployee(HttpRequest Request)
       {
-         this.employee = JSON.httpContextDeseriliser<Employee>(context);
-      }
+         Employee emp;
+         using (StreamReader reader = new StreamReader(Request.Body))
+         {
+            string body = await reader.ReadToEndAsync();
+            emp = JSON.objectDeserializer<Employee>(body);
+         }
 
-      public async Task<string> values()
-      {
-         Employee emp = await this.employee;
-         return $"'{emp.first_name}', '{emp.last_name}', '{emp.designation}', '{emp.email}', {emp.mobile}, {emp.id}, {emp.supervisor}";
-      }
+         int employeeCount = Connection.Sql<int>($"SELECT id FROM {Table.EMPLOYEE}", check);
 
-      public string keys()
-      {
-         return "first_name, last_name, designation, email, mobile, id, supervisor";
-      }
+         int check(Npgsql.NpgsqlDataReader reader)
+         {
+            List<long> list = new List<long>();
 
-      public static string check(NpgsqlDataReader reader)
-      {
-         Console.WriteLine(reader.RecordsAffected);
-         return "agahjsd";
+            while (reader.Read()) list.Add((long)reader[0]);
+            return list.Count;
+         }
+
+         string func(NpgsqlDataReader reader) => (reader.RecordsAffected == 1) ? "Successfully Added" : "Not Added";
+
+         if (employeeCount > 0)
+         {
+            return "Employee already Existed";
+         }
+
+         string values = $"'{emp.first_name}', '{emp.last_name}', '{emp.designation}', '{emp.email}', {emp.mobile}, {emp.id}, {emp.supervisor}, '{emp.password}', '{emp.user_name}'";
+         string keys = "first_name, last_name, designation, email, mobile, id, supervisor, password, user_name";
+
+         return Connection.Sql<string>($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", func);
       }
    }
 }
