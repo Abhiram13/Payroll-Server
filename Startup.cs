@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Employee;
+using NEmployee;
 using Database;
 using Npgsql;
 
@@ -46,7 +46,7 @@ namespace Payroll_Server
 
          app.UseRouting();
 
-         app.UseMvc();
+         // app.UseMvc();
 
          app.UseAuthorization();         
 
@@ -61,6 +61,14 @@ namespace Payroll_Server
             endpoints.MapGet("/employee/roles/all", (HttpContext context) => 
             {               
                return context.Response.WriteAsync(Connection.Sql($"SELECT * FROM {Table.ROLES}", Roles.fetchAll));
+            });
+
+            endpoints.MapPost("/employee/add", async (HttpContext context) =>
+            {
+               EmployeeController controller = new EmployeeController(context);
+               string keys = controller.keys();
+               string values = await controller.values();
+               await context.Response.WriteAsync(Connection.Sql($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", EmployeeController.check));
             });
          });
       }

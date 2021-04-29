@@ -4,16 +4,16 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Payroll_Server
+namespace System
 {
    public static class Json
    {
       /// <summary>
-      /// Converts Http Request body to Object
+      /// Converts Http Request body to System.object
       /// </summary>
-      /// <typeparam name="DocumentType">Type of Object that need to convert</typeparam>
-      /// <param name="context">HttpContext</param>
-      /// <returns>Awaitable Object Type</returns>      
+      /// <typeparam name="DocumentType">Type of system.object that need to convert</typeparam>
+      /// <param name="context">HttpContext that contains Request Body</param>
+      /// <returns>Awaitable DocumentType</returns>      
       public static async Task<DocumentType> httpContextDeseriliser<DocumentType>(HttpContext context)
       {
          Task<string> str = new StreamReader(context.Request.Body).ReadToEndAsync();

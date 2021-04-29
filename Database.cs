@@ -9,7 +9,7 @@ namespace Database
 
    public class Connection
    {
-      private static string connectionString = "Host=localhost;Username=postgres;Password=123;Database=postgres";
+      private static string connectionString = "Host=localhost;Username=postgres;Password=123;Database=postgres";      
 
       public static string Sql(string query, Reader function)
       {         
