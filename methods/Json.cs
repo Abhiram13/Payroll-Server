@@ -12,11 +12,11 @@ namespace System
       /// Converts Http Request body to System.object
       /// </summary>
       /// <typeparam name="DocumentType">Type of system.object that need to convert</typeparam>
-      /// <param name="context">HttpContext that contains Request Body</param>
+      /// <param name="request">HttpRequest that contains Request Body</param>
       /// <returns>Awaitable DocumentType</returns>      
-      public static async Task<DocumentType> httpContextDeseriliser<DocumentType>(HttpContext context)
+      public static async Task<DocumentType> httpContextDeseriliser<DocumentType>(HttpRequest request)
       {
-         Task<string> str = new StreamReader(context.Request.Body).ReadToEndAsync();
+         Task<string> str = new StreamReader(request.Body).ReadToEndAsync();
          return JsonSerializer.Deserialize<DocumentType>(await str);
       }
 

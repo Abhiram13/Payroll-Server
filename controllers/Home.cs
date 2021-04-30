@@ -1,26 +1,30 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Threading.Tasks;
 using NEmployee;
-using Database;
-using Npgsql;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Payroll_Server
 {
    [Route("")]
+   [Auth(10)]
    public class HomeController : Controller
-   {      
-      [HttpDelete][HttpPut][HttpPost][HttpGet]
+   {  
+      [HttpGet]
+      [HttpPost]
+      [HttpPut]
+      [HttpDelete]
       public string Method() => "Welcome to Payroll";
 
       [HttpPost]
       [Route("login")]
-      public void Login() { }
+      public void Login() 
+      { 
+
+      }
 
       [HttpPost]
-      [Route("signup")]
+      [Route("signup")]      
       public async Task<string> Signup() => await EmployeeController.AddEmployee(Request);
    }
 }

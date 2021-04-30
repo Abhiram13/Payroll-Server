@@ -43,15 +43,9 @@ namespace NEmployee
    {
       public static async Task<string> AddEmployee(HttpRequest Request)
       {
-         Employee emp;
-         using (StreamReader reader = new StreamReader(Request.Body))
-         {
-            string body = await reader.ReadToEndAsync();
-            emp = JSON.objectDeserializer<Employee>(body);
-         }
-
+         Employee emp = await JSON.httpContextDeseriliser<Employee>(Request);
          int employeeCount = Connection.Sql<int>($"SELECT id FROM {Table.EMPLOYEE}", check);
-
+         
          int check(Npgsql.NpgsqlDataReader reader)
          {
             List<long> list = new List<long>();
