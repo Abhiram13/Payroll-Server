@@ -73,7 +73,7 @@ namespace NEmployee {
 
          string check(NpgsqlDataReader reader) {
             while (reader.Read()) {
-               return Token.Encode($"'{reader[1]}': {reader[2]}");
+               return StringValue.Encode($"'{reader[1]}': {reader[2]}");
             }
 
             return "Employee Not Found";

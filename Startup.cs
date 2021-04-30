@@ -46,6 +46,8 @@ namespace Payroll_Server
 
          app.UseRouting();
 
+         app.UseMiddleware<AuthenticationMiddleware>();
+
          app.UseAuthorization();         
 
          app.UseEndpoints(endpoints =>
