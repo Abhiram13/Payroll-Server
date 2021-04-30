@@ -4,12 +4,11 @@ using System.Threading.Tasks;
 using NEmployee;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Payroll_Server
-{
+namespace Payroll_Server {
+
    [Route("")]
-   [Auth(10)]
-   public class HomeController : Controller
-   {  
+   public class HomeController : Controller {
+
       [HttpGet]
       [HttpPost]
       [HttpPut]
@@ -18,13 +17,10 @@ namespace Payroll_Server
 
       [HttpPost]
       [Route("login")]
-      public void Login() 
-      { 
-
-      }
+      public async Task<string> Login() => await EmployeeController.EmployeeLogin(Request);
 
       [HttpPost]
-      [Route("signup")]      
+      [Route("signup")]
       public async Task<string> Signup() => await EmployeeController.AddEmployee(Request);
    }
 }
