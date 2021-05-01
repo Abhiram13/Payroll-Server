@@ -65,7 +65,7 @@ namespace System {
                string role = "";
                while (reader.Read()) role = (string)reader[0];
 
-               string Role = Array.Find(roles, r => r == role);
+               string Role = Array.Find(roles, r => r.ToUpper() == role.ToUpper());
 
                if (Role == null || string.IsNullOrEmpty(Role)) {
                   return new ServerResponse() {
