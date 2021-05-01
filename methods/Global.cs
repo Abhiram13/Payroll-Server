@@ -39,6 +39,13 @@ namespace System {
    }
 
    public static class Token {
+
+      /// <summary>
+      /// Verifies given Token and authorises Employee based on Roles given
+      /// </summary>
+      /// <param name="roles">Shall be Authorised only to the given Roles</param>
+      /// <param name="header">Request Headers that contains Token value</param>
+      /// <returns>ServerResponse contains Message and StatusCode</returns>
       public static ServerResponse Verify(string[] roles, IHeaderDictionary header) {
          StringValues token = header["Auth"];
          if (token == "") {
