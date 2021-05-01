@@ -1,7 +1,9 @@
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using System.Text;
+using Npgsql;
+using Database;
+using Microsoft.Extensions.Primitives;
 
 namespace System {
    public static class OBJECT {
@@ -36,41 +38,51 @@ namespace System {
       }
    }
 
-   public class AuthenticationMiddleware {
-      private readonly RequestDelegate _next;
+   public static class Token {
+      public static ServerResponse Verify(string[] roles, IHeaderDictionary header) {
+         StringValues token = header["Auth"];
+         if (token == "") {
+            return new ServerResponse() {
+               Message = "Please provide valid Token",
+               Status = 404,
+            };
+         }
 
-      public AuthenticationMiddleware(RequestDelegate next) {
-         _next = next;
-      }
+         string[] decode;
 
-      public async Task Invoke(HttpContext context) {
-         if (context.Request.Path.StartsWithSegments("/api")) {
-            string authHeader = context.Request.Headers["Auth"];
-            if (authHeader != null && authHeader.StartsWith("Basic")) {
-               //Extract credentials
-               string encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-               Encoding encoding = Encoding.GetEncoding("iso-8859-1");
-               string usernamePassword = encoding.GetString(Convert.FromBase64String(encodedUsernamePassword));
+         try {
+            decode = StringValue.Decode(token).Split(":");
+            return Connection.Sql<ServerResponse>($"SELECT designation FROM {Table.EMPLOYEE} WHERE id = {decode[0]}", VerifyUser);
 
-               int seperatorIndex = usernamePassword.IndexOf(':');
+            ServerResponse VerifyUser(Npgsql.NpgsqlDataReader reader) {
+               string role = "";
+               while (reader.Read()) role = (string)reader[0];
 
-               var username = usernamePassword.Substring(0, seperatorIndex);
-               var password = usernamePassword.Substring(seperatorIndex + 1);
+               string Role = Array.Find(roles, r => r == role);
 
-               if (username == "test" && password == "test") {
-                  await _next.Invoke(context);
-               } else {
-                  context.Response.StatusCode = 401; //Unauthorized
-                  return;
+               if (Role == null || string.IsNullOrEmpty(Role)) {
+                  return new ServerResponse() {
+                     Message = "You are not Authorised to access this Route",
+                     Status = 401,
+                  };
                }
-            } else {
-               // no authorization header
-               context.Response.StatusCode = 401; //Unauthorized
-               return;
+
+               return new ServerResponse() {
+                  Message = "Authorise",
+                  Status = 200,
+               };
             }
-         } else {
-            await _next.Invoke(context);
-         }             
+         } catch (Exception e) {
+            return new ServerResponse() {
+               Message = $"Token is InValid, {e.HResult}",
+               Status = 404,
+            };
+         }
       }
+   }
+
+   public class ServerResponse {
+      public string Message { get; set; }
+      public int Status { get; set; }
    }
 }
