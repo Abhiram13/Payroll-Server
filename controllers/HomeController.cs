@@ -13,7 +13,11 @@ namespace Payroll_Server {
       [HttpPost]
       [HttpPut]
       [HttpDelete]
-      public string Method() => "Welcome to Payroll";
+      // [Aut]
+      public string Method() {
+         // Console.WriteLine(Request.);
+         return "Welcome to Payroll";
+      }
 
       [HttpPost]
       [Route("login")]

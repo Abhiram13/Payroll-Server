@@ -10,16 +10,6 @@ using NEmployee;
 using Database;
 
 namespace NEmployee {
-   class Roles {
-      public static string fetchAll(NpgsqlDataReader reader) {
-         List<string> list = new List<string>();
-
-         while (reader.Read()) list.Add((string)reader[0]);
-
-         return JsonSerializer.Serialize(list.ToArray());
-      }
-   }   
-
    class EmployeeController {
       public static async Task<string> AddEmployee(HttpRequest Request) {
          Employee emp = await JSON.httpContextDeseriliser<Employee>(Request);

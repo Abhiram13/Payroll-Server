@@ -14,14 +14,15 @@ namespace Payroll_Server {
       
       [HttpGet]
       [Route("all")]
+      [Aut(roles:"Admin,HR")]
       public string fetchAll() {
-         string[] roles = new string[] { "Admin" };
-         ServerResponse token = Token.Verify(roles, Request.Headers);
+         // string[] roles = new string[] { "Admin" };
+         // ServerResponse token = Token.Verify(roles, Request.Headers);
 
-         if (token.Status != 200) {
-            Response.StatusCode = token.Status;
-            return token.Message;
-         }
+         // if (token.Status != 200) {
+         //    Response.StatusCode = token.Status;
+         //    return token.Message;
+         // }
 
          string[] listOfRoles = Connection.Sql<string[]>($"SELECT * FROM {Table.ROLES}", fetchRoles);
 
@@ -36,6 +37,39 @@ namespace Payroll_Server {
 
             return listOfroles.ToArray();
          };
-      }      
+      }
+
+      [HttpPost]
+      [Route("add")]
+      public async Task<string> add() {
+         string[] roles = new string[] { "Admin" };
+         ServerResponse token = Token.Verify(roles, Request.Headers);
+
+         if (token.Status != 200) {
+            Response.StatusCode = token.Status;
+            return token.Message;
+         }
+
+         Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
+         bool isRoleExist = Connection.Sql<bool>($"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{requestBody.role}'", checkIfRoleExist);
+
+         if (isRoleExist) {
+            Response.StatusCode = 302;
+            return "Role has already been Added";
+         }
+
+         int roleIncluded = Connection.Sql<int>($"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')", rowsAffected);
+
+         if (roleIncluded > 0) {
+            Response.StatusCode = 200;
+            return "Role Successfully Added";
+         }
+
+         return "";
+
+         bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
+
+         int rowsAffected(NpgsqlDataReader reader) => reader.RecordsAffected;
+      }
    }
 }

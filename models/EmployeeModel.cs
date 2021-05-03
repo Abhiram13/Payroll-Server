@@ -17,4 +17,8 @@ namespace System {
       public long id { get; set; }
       public string password { get; set; }
    }
+
+   public class Role {
+      public string role { get; set; }
+   }
 }
