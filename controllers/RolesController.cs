@@ -14,16 +14,8 @@ namespace Payroll_Server {
       
       [HttpGet]
       [Route("all")]
-      [Aut(roles:"Admin,HR")]
+      [Authorise(roles:"Admin,HR")]
       public string fetchAll() {
-         // string[] roles = new string[] { "Admin" };
-         // ServerResponse token = Token.Verify(roles, Request.Headers);
-
-         // if (token.Status != 200) {
-         //    Response.StatusCode = token.Status;
-         //    return token.Message;
-         // }
-
          string[] listOfRoles = Connection.Sql<string[]>($"SELECT * FROM {Table.ROLES}", fetchRoles);
 
          return JSON.Serializer<string[]>(listOfRoles);
@@ -42,13 +34,13 @@ namespace Payroll_Server {
       [HttpPost]
       [Route("add")]
       public async Task<string> add() {
-         string[] roles = new string[] { "Admin" };
-         ServerResponse token = Token.Verify(roles, Request.Headers);
+         // string[] roles = new string[] { "Admin" };
+         // ServerResponse token = Token.Verify(roles, Request.Headers);
 
-         if (token.Status != 200) {
-            Response.StatusCode = token.Status;
-            return token.Message;
-         }
+         // if (token.Status != 200) {
+         //    Response.StatusCode = token.Status;
+         //    return token.Message;
+         // }
 
          Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
          bool isRoleExist = Connection.Sql<bool>($"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{requestBody.role}'", checkIfRoleExist);

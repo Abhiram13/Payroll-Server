@@ -39,65 +39,13 @@ namespace System {
       }
    }
 
-   public static class Token {
-
-      /// <summary>
-      /// Verifies given Token and authorises Employee based on Roles given
-      /// </summary>
-      /// <param name="roles">Shall be Authorised only to the given Roles</param>
-      /// <param name="header">Request Headers that contains Token value</param>
-      /// <returns>ServerResponse contains Message and StatusCode</returns>
-      public static ServerResponse Verify(string[] roles, IHeaderDictionary header) {
-         StringValues token = header["Auth"];
-         if (token == "") {
-            return new ServerResponse() {
-               Message = "Please provide valid Token",
-               Status = 404,
-            };
-         }
-
-         string[] decode;
-
-         try {
-            decode = StringValue.Decode(token).Split(":");
-            return Connection.Sql<ServerResponse>($"SELECT designation FROM {Table.EMPLOYEE} WHERE id = {decode[0]}", VerifyUser);
-
-            ServerResponse VerifyUser(Npgsql.NpgsqlDataReader reader) {
-               string role = "";
-               while (reader.Read()) role = (string)reader[0];
-
-               string Role = Array.Find(roles, r => r.ToUpper() == role.ToUpper());
-
-               if (Role == null || string.IsNullOrEmpty(Role)) {
-                  return new ServerResponse() {
-                     Message = "You are not Authorised to access this Route",
-                     Status = 401,
-                  };
-               }
-
-               return new ServerResponse() {
-                  Message = "Authorise",
-                  Status = 200,
-               };
-            }
-         } catch (Exception e) {
-            return new ServerResponse() {
-               Message = $"Token is InValid, {e.HResult}",
-               Status = 404,
-            };
-         }
-      }
-   }
-
-   public class AutAttribute : ActionFilterAttribute {
+   [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+   public class AuthoriseAttribute : ActionFilterAttribute {
       private string[] Roles;
 
-      public AutAttribute(string roles) {
-         this.Roles = roles.Split(",");
-      }
+      public AuthoriseAttribute(string roles) => this.Roles = roles.Split(",");
 
       public override void OnActionExecuted(ActionExecutedContext context) {
-         Console.WriteLine(this.Roles[0]);
          HttpRequest request = context.HttpContext.Request;
          HttpResponse response = context.HttpContext.Response;
          StringValues token = request.Headers["Auth"];
@@ -112,7 +60,7 @@ namespace System {
 
          try {
             decode = StringValue.Decode(token).Split(":");
-            var x = Connection.Sql($"SELECT designation FROM {Table.EMPLOYEE} WHERE id = {decode[0]}", VerifyUser);
+            Connection.Sql($"SELECT designation FROM {Table.EMPLOYEE} WHERE id = {decode[0]}", VerifyUser);
 
             string VerifyUser(Npgsql.NpgsqlDataReader reader) {
                string role = "";
