@@ -16,12 +16,11 @@ namespace Payroll_Server {
       [Route("all")]
       public string fetchAll() {
          string[] roles = new string[] { "Admin" };
-         ServerResponse res = Token.Verify(roles, Request.Headers);
+         ServerResponse token = Token.Verify(roles, Request.Headers);
 
-         if (res.Status != 200) {
-            Response.StatusCode = res.Status;
-            Response.WriteAsync(res.Message);
-            return null;
+         if (token.Status != 200) {
+            Response.StatusCode = token.Status;
+            return token.Message;
          }
 
          string[] listOfRoles = Connection.Sql<string[]>($"SELECT * FROM {Table.ROLES}", fetchRoles);
