@@ -48,7 +48,7 @@ namespace NEmployee {
             while (reader.Read()) {
                return StringValue.Encode($"'{reader[1]}': {reader[2]}");
             }
-
+            
             return "Employee Not Found";
          }
       }
