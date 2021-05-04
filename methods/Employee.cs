@@ -11,32 +11,40 @@ using Database;
 
 namespace NEmployee {
    class EmployeeController {
-      public static async Task<string> AddEmployee(HttpRequest Request) {
-         Employee emp = await JSON.httpContextDeseriliser<Employee>(Request);
-         int employeeCount = Connection.Sql<int>($"SELECT id FROM {Table.EMPLOYEE}", check);
+      private static int EmployeeCount(Employee employeeRequestBody) {
+         return Connection.Sql<int>($"SELECT id FROM {Table.EMPLOYEE}", check);
 
          int check(Npgsql.NpgsqlDataReader reader) {
             List<long> list = new List<long>();
 
             while (reader.Read()) {
-               if (emp.id == (long)reader[0]) {
+               if (employeeRequestBody.id == (long)reader[0]) {
                   list.Add((long)reader[0]);
                }
             }
 
             return list.Count;
          }
+      }
 
+      private static string InsertEmployee(string keys, string values) {
          string func(NpgsqlDataReader reader) => (reader.RecordsAffected == 1) ? "Successfully Added" : "Not Added";
 
-         if (employeeCount > 0) {
-            return "Employee already Existed";
-         }
-
-         string values = OBJECT.GetValues<Employee>(emp);
-         string keys = OBJECT.GetKeys<Employee>(emp);
-
          return Connection.Sql<string>($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", func);
+      }
+      
+      public static async Task<string> AddEmployee(HttpRequest Request) {
+         Employee employeeRequestBody = await JSON.httpContextDeseriliser<Employee>(Request);
+         bool roleExist = isRoleExist(employeeRequestBody.designation);
+
+         if (EmployeeCount(employeeRequestBody) > 0) return "Employee already Existed";
+
+         if (!roleExist) return "Designation does not Exist";
+
+         string values = OBJECT.GetValues<Employee>(employeeRequestBody);
+         string keys = OBJECT.GetKeys<Employee>(employeeRequestBody);
+
+         return InsertEmployee(keys, values);
       }
 
       public static async Task<string> EmployeeLogin(HttpRequest request) {
@@ -51,6 +59,14 @@ namespace NEmployee {
             
             return "Employee Not Found";
          }
+      }
+
+      public static bool isRoleExist(string role) {
+         bool isRoleExist = Connection.Sql<bool>($"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{role}'", checkIfRoleExist);
+
+         bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
+
+         return isRoleExist;
       }
    }
 }

@@ -34,16 +34,15 @@ namespace Payroll_Server {
       [Authorise(roles: "Admin,HR")]
       public async Task<string> add() {
          Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
-         bool isRoleExist = Connection.Sql<bool>($"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{requestBody.role}'", checkIfRoleExist);
 
-         if (isRoleExist) {
+         if (EmployeeController.isRoleExist(requestBody.role)) {
             Response.StatusCode = StatusCodes.Status304NotModified;
             return "Role has already been Added";
          }
 
-         int roleIncluded = Connection.Sql<int>($"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')", rowsAffected);
+         int roleCount = Connection.Sql<int>($"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')", rowsAffected);
 
-         if (roleIncluded > 0) {
+         if (roleCount > 0) {
             Response.StatusCode = StatusCodes.Status201Created;
             return "Role Successfully Added";
          }
@@ -51,8 +50,7 @@ namespace Payroll_Server {
          Response.StatusCode = StatusCodes.Status502BadGateway;
          return "Internal Error";
 
-         bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
          int rowsAffected(NpgsqlDataReader reader) => reader.RecordsAffected;
-      }
+      }      
    }
 }
