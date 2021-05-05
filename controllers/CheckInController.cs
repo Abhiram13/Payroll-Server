@@ -5,32 +5,34 @@ using NEmployee;
 using Microsoft.AspNetCore.Authorization;
 using Npgsql;
 using Database;
-using System.Threading;
+using System.Timers;
 
 namespace Payroll_Server {
-   [Route("api/employee/checkin")]
+   [Route("api/employee")]
    public class CheckInController : Controller {
-      private void timeOut() {
-         int che(NpgsqlDataReader reader) => reader.RecordsAffected;
-         Connection.Sql<int>($"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {1}", che);
-      }
+      private static DateTime date = DateTime.Now;
+      private string currentDate = $"{date.Year}/{date.Month}/{date.Day}";
 
-      private async void thr() {
-         Thread thread = new Thread(new ThreadStart(() => timeOut()));
-         await Task.Delay(5000);
-         thread.Start();
+      private void updateCheckOut() {
+         int func(NpgsqlDataReader reader) => reader.RecordsAffected;
+         Connection.Sql<int>(
+            $"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {1} AND date = '{currentDate}' AND check_out IS NULL", 
+            func
+         );
       }
 
       [HttpGet]
-      public string get() {
-         DateTime date = DateTime.Now;
-         string x = $"{date.Year}/{date.Month}/{date.Day}";
+      [Route("checkin")]
+      public string checkIn() {
          int che(NpgsqlDataReader reader) => reader.RecordsAffected;
-         int xy = Connection.Sql<int>($"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({1}, '{Time.CurrentTime()}', '{x}')", che);
+         int xy = Connection.Sql<int>($"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({1}, '{Time.CurrentTime()}', '{currentDate}')", che);
+         return "Checked-In";
+      }
 
-         thr();
-
-         return "OKAY";
+      [Route("checkout")]
+      public string checkout() {
+         updateCheckOut();
+         return "Checked-Out";
       }
    }
 }
