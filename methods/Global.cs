@@ -31,5 +31,12 @@ namespace System {
          byte[] base64EncodedBytes = System.Convert.FromBase64String(str);
          return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
       }
-   }   
+   }
+
+   public static class Time {
+      public static TimeSpan CurrentTime() {
+         DateTime Now = DateTime.Now;
+         return new TimeSpan(Now.Hour, Now.Minute, Now.Second);    
+      }
+   }
 }
