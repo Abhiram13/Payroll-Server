@@ -1,11 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using NEmployee;
-using Microsoft.AspNetCore.Authorization;
 using Npgsql;
 using Database;
-using System.Timers;
 
 namespace Payroll_Server {
    [Route("api/employee")]
@@ -23,6 +19,7 @@ namespace Payroll_Server {
 
       [HttpGet]
       [Route("checkin")]
+      [Authorise(roles:"all")]
       public string checkIn() {
          int che(NpgsqlDataReader reader) => reader.RecordsAffected;
          int xy = Connection.Sql<int>($"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({1}, '{Time.CurrentTime()}', '{currentDate}')", che);
