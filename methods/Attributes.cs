@@ -11,53 +11,68 @@ namespace System {
    public class AuthoriseAttribute : ActionFilterAttribute {
       private string[] Roles;
 
-      public AuthoriseAttribute(string roles) => this.Roles = roles.Split(",");
+      public AuthoriseAttribute(string roles) {
+         this.Roles = roles.Split(",");
+      }
 
-      private string fetchRole(string role) => Array.Find(this.Roles, r => r.ToUpper() == role.ToUpper());
+      private string FetchRole(string role) {
+         return Array.Find(this.Roles, r => r.ToUpper() == role.ToUpper());
+      }
 
-      private string readerFunc(HttpResponse response, NpgsqlDataReader reader) {
+      private string RoleFromReader(NpgsqlDataReader reader) {
          string role = "";
-         while (reader.Read()) role = (string)reader[0];
+         while (reader.Read()) {
+            role = (string)reader[0];
+         }
 
-         Console.WriteLine(role);
+         return role;
+      }
 
-         string Role = fetchRole(role);
+      private bool AuthoriseAll(string role, bool isAll) {
+         return (role != "" && isAll) ? true : false;
+      }
+
+      private string ReaderFunc(HttpResponse response, NpgsqlDataReader reader) {
+         string roleFromReader = RoleFromReader(reader);
+         string Role = FetchRole(roleFromReader);
          bool isAll = this.Roles[0].ToUpper() == ("all").ToUpper();
          bool isNull = string.IsNullOrEmpty(Role);
 
-         if (isAll) return "";
+         if (AuthoriseAll(roleFromReader, isAll)) return "";
 
          if (string.IsNullOrEmpty(Role)) {
-            response.StatusCode = 401;
-            response.WriteAsync("You are not Authorised to access this Route");
+            Response(response, 401, "You are not Authorised to access this Route");
             return "";
          }
 
          return "";
       }
 
-      public override void OnActionExecuted(ActionExecutedContext context) {         
-         HttpRequest request = context.HttpContext.Request;
+      private void Response(HttpResponse response, int statuCode, string message) {
+         response.StatusCode = statuCode;
+         response.WriteAsync(message);
+      }
+
+      public override void OnActionExecuted(ActionExecutedContext context) {
          HttpResponse response = context.HttpContext.Response;
-         StringValues token = request.Headers["Auth"];
+         StringValues token = context.HttpContext.Request.Headers["Auth"];
+         string[] decode;
 
          if (string.IsNullOrEmpty(token)) {
-            response.StatusCode = 404;
-            response.WriteAsync("Please provide valid Token");
+            Response(response, 404, "Please provide valid Token");
             return;
-         }
-
-         string[] decode;
+         }         
 
          try {
             decode = StringValue.Decode(token).Split(":");
             Connection.Sql($"SELECT designation FROM {Table.EMPLOYEE} WHERE id = {decode[0]}", VerifyUser);
 
-            string VerifyUser(NpgsqlDataReader reader) => readerFunc(response, reader);
+            string VerifyUser(NpgsqlDataReader reader) {
+               return ReaderFunc(response, reader);
+            }
 
          } catch (Exception e) {
-            response.StatusCode = 404;
-            response.WriteAsync($"Token is InValid, {e.HResult}");
+            Response(response, 404, $"Token is InValid, {e.HResult}");
             return;
          }
       }
