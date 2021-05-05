@@ -10,8 +10,8 @@ using NEmployee;
 using Database;
 
 namespace NEmployee {
-   class EmployeeController {
-      private static int EmployeeCount(Employee employeeRequestBody) {
+   class EmployeeManagement {
+      private static int Count(Employee employeeRequestBody) {
          return Connection.Sql<int>($"SELECT id FROM {Table.EMPLOYEE}", check);
 
          int check(Npgsql.NpgsqlDataReader reader) {
@@ -27,27 +27,27 @@ namespace NEmployee {
          }
       }
 
-      private static string InsertEmployee(string keys, string values) {
+      private static string Insert(string keys, string values) {
          string func(NpgsqlDataReader reader) => (reader.RecordsAffected == 1) ? "Successfully Added" : "Not Added";
 
          return Connection.Sql<string>($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", func);
       }
       
-      public static async Task<string> AddEmployee(HttpRequest Request) {
+      public static async Task<string> Add(HttpRequest Request) {
          Employee employeeRequestBody = await JSON.httpContextDeseriliser<Employee>(Request);
          bool roleExist = isRoleExist(employeeRequestBody.designation);
 
-         if (EmployeeCount(employeeRequestBody) > 0) return "Employee already Existed";
+         if (Count(employeeRequestBody) > 0) return "Employee already Existed";
 
          if (!roleExist) return "Designation does not Exist";
 
          string values = OBJECT.GetValues<Employee>(employeeRequestBody);
          string keys = OBJECT.GetKeys<Employee>(employeeRequestBody);
 
-         return InsertEmployee(keys, values);
+         return Insert(keys, values);
       }
 
-      public static async Task<string> EmployeeLogin(HttpRequest request) {
+      public static async Task<string> Login(HttpRequest request) {
          Login login = await JSON.httpContextDeseriliser<Login>(request);
          string query = $"SELECT password, id, user_name FROM {Table.EMPLOYEE} WHERE id = {login.id} AND password = '{login.password}'";
          return Connection.Sql<string>(query, check);

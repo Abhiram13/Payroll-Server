@@ -13,18 +13,14 @@ namespace Payroll_Server {
       [HttpPost]
       [HttpPut]
       [HttpDelete]
-      // [Aut]
-      public string Method() {
-         // Console.WriteLine(Request.);
-         return "Welcome to Payroll";
-      }
+      public string Method() => "Welcome to Payroll";
 
       [HttpPost]
       [Route("login")]
-      public async Task<string> Login() => await EmployeeController.EmployeeLogin(Request);
+      public async Task<string> Login() => await EmployeeManagement.Login(Request);
 
       [HttpPost]
       [Route("signup")]
-      public async Task<string> Signup() => await EmployeeController.AddEmployee(Request);
+      public async Task<string> Signup() => await EmployeeManagement.Add(Request);
    }
 }

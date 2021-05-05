@@ -35,7 +35,7 @@ namespace Payroll_Server {
       public async Task<string> add() {
          Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
 
-         if (EmployeeController.isRoleExist(requestBody.role)) {
+         if (EmployeeManagement.isRoleExist(requestBody.role)) {
             Response.StatusCode = StatusCodes.Status304NotModified;
             return "Role has already been Added";
          }
