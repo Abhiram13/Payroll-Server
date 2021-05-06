@@ -2,12 +2,11 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using NEmployee;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Payroll_Server {
 
    [Route("")]
-   public class HomeController : Controller {
+   public class HomeController : Controller, IHomeController {
 
       [HttpGet]
       [HttpPost]

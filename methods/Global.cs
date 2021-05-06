@@ -7,6 +7,7 @@ namespace System {
    public static class OBJECT {
       public static string GetKeys<ObjectType>(ObjectType obj) {
          string keys = "";
+
          foreach (var key in typeof(ObjectType).GetProperties()) {
             keys += $"{key.Name}, ";
          }
@@ -16,6 +17,7 @@ namespace System {
 
       public static string GetValues<ObjectType>(ObjectType obj) {
          string values = "";
+         
          foreach (var value in typeof(ObjectType).GetProperties()) {
             values += (value.PropertyType == typeof(string)) ? $"'{value.GetValue(obj)}', " : $"{value.GetValue(obj)}, ";
          }
@@ -36,10 +38,10 @@ namespace System {
       }
    }
 
-   public static class Time {
+   public class Time {
       public static TimeSpan CurrentTime() {
          DateTime Now = DateTime.Now;
-         return new TimeSpan(Now.Hour, Now.Minute, Now.Second);    
+         return new TimeSpan(Now.Hour, Now.Minute, Now.Second);
       }
    }
 

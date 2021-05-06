@@ -21,4 +21,9 @@ namespace System {
    public class Role {
       public string role { get; set; }
    }
+
+   public class ServerResponse {
+      public string Message { get; set; }
+      public int Status { get; set; }
+   }
 }

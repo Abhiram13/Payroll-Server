@@ -10,12 +10,12 @@ using System.Collections.Generic;
 namespace Payroll_Server {   
 
    [Route("api/roles")]
-   public class RolesController : Controller {
+   public class RolesController : Controller, IRoleController {
       
       [HttpGet]
       [Route("all")]
       [Authorise(roles:"Admin,HR")]
-      public string fetchAll() {
+      public string FetchAll() {
          Response.StatusCode = StatusCodes.Status200OK;
          return JSON.Serializer<List<string>>(
             Connection.Sql<List<string>>($"SELECT * FROM {Table.ROLES}", fetchRoles)
@@ -32,7 +32,7 @@ namespace Payroll_Server {
       [HttpPost]
       [Route("add")]
       [Authorise(roles: "Admin,HR")]
-      public async Task<string> add() {
+      public async Task<string> Add() {
          Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
 
          if (EmployeeManagement.isRoleExist(requestBody.role)) {
@@ -51,6 +51,6 @@ namespace Payroll_Server {
          return "Internal Error";
 
          int rowsAffected(NpgsqlDataReader reader) => reader.RecordsAffected;
-      }      
+      }
    }
 }
