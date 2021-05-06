@@ -21,14 +21,4 @@ namespace System {
    public class Role {
       public string role { get; set; }
    }
-
-   public class CheckIn {
-      public long id { get; set; }
-      public TimeSpan check_in { get; set; }      
-      public string date { get; set; }
-   }
-
-   public class CheckOut {
-      public DateTime check_out { get; set; }
-   }
 }

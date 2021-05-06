@@ -12,7 +12,7 @@ namespace Payroll_Server {
       private void updateCheckOut() {
          int func(NpgsqlDataReader reader) => reader.RecordsAffected;
          Connection.Sql<int>(
-            $"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {1} AND date = '{currentDate}' AND check_out IS NULL", 
+            $"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {new Token(Request).id} AND date = '{currentDate}' AND check_out IS NULL", 
             func
          );
       }
@@ -22,7 +22,11 @@ namespace Payroll_Server {
       [Authorise(roles:"all")]
       public string checkIn() {
          int che(NpgsqlDataReader reader) => reader.RecordsAffected;
-         int xy = Connection.Sql<int>($"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({1}, '{Time.CurrentTime()}', '{currentDate}')", che);
+         int xy = Connection.Sql<int>(
+            $"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({new Token(Request).id}, '{Time.CurrentTime()}', '{currentDate}')",
+            che
+         );
+
          return "Checked-In";
       }
 

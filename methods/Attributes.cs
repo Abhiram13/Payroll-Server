@@ -61,7 +61,7 @@ namespace System {
          if (string.IsNullOrEmpty(token)) {
             Response(response, 404, "Please provide valid Token");
             return;
-         }         
+         }
 
          try {
             decode = StringValue.Decode(token).Split(":");

@@ -1,4 +1,7 @@
 using System;
+using Microsoft.AspNetCore.Http;
+using Database;
+using Npgsql;
 
 namespace System {
    public static class OBJECT {
@@ -37,6 +40,16 @@ namespace System {
       public static TimeSpan CurrentTime() {
          DateTime Now = DateTime.Now;
          return new TimeSpan(Now.Hour, Now.Minute, Now.Second);    
+      }
+   }
+
+   public class Token {
+      private string[] decodedToken;
+      public string id;
+
+      public Token(HttpRequest request) {
+         this.decodedToken = StringValue.Decode(request.Headers["Auth"]).Split(":");
+         this.id = this.decodedToken[0];
       }
    }
 }
