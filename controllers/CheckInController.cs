@@ -9,8 +9,9 @@ namespace Payroll_Server {
       private static DateTime date = DateTime.Now;
       private string currentDate = $"{date.Year}/{date.Month}/{date.Day}";
 
+      private int func(NpgsqlDataReader reader) => reader.RecordsAffected;
+
       private void UpdateCheckOut() {
-         int func(NpgsqlDataReader reader) => reader.RecordsAffected;
          Connection.Sql<int>(
             $"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {new Token(Request).id} AND date = '{currentDate}' AND check_out IS NULL", 
             func
@@ -21,10 +22,9 @@ namespace Payroll_Server {
       [Route("checkin")]
       [Authorise(roles:"all")]
       public string CheckIn() {
-         int che(NpgsqlDataReader reader) => reader.RecordsAffected;
          int xy = Connection.Sql<int>(
             $"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({new Token(Request).id}, '{Time.CurrentTime()}', '{currentDate}')",
-            che
+            func
          );
 
          return "Checked-In";

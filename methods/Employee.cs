@@ -35,7 +35,7 @@ namespace NEmployee {
       
       public static async Task<string> Add(HttpRequest Request) {
          Employee employeeRequestBody = await JSON.httpContextDeseriliser<Employee>(Request);
-         bool roleExist = isRoleExist(employeeRequestBody.designation);
+         bool roleExist = IsRoleExist(employeeRequestBody.designation);
 
          if (Count(employeeRequestBody) > 0) return "Employee already Existed";
 
@@ -61,12 +61,19 @@ namespace NEmployee {
          }
       }
 
-      public static bool isRoleExist(string role) {
+      public static bool IsRoleExist(string role) {
          bool isRoleExist = Connection.Sql<bool>($"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{role}'", checkIfRoleExist);
 
          bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
 
          return isRoleExist;
+      }
+
+      public static bool IsEmployeeExist(string id) {
+         bool isEmployeeExist = Connection.Sql<bool>($"SELECT id FROM {Table.EMPLOYEE} WHERE id = {id}", checkIfRoleExist);
+         bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
+
+         return isEmployeeExist;
       }
    }
 }

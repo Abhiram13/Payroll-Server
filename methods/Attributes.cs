@@ -4,6 +4,14 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Database;
 using Npgsql;
+using NEmployee;
+
+// Decode Auth Header ::check
+// Take id from decoded, check if such employee exist
+// if yes, then check if employee role is matched with the given roles in parameter
+// if yes, authorise
+// if parameter is all, then check if id is present in database
+// if yes, then authorise
 
 namespace System {
 
@@ -75,6 +83,18 @@ namespace System {
             Response(response, 404, $"Token is InValid, {e.HResult}");
             return;
          }
+      }
+   }
+
+   public class TestAttribute : ActionFilterAttribute {
+      private HttpResponse response;
+
+      public override void OnActionExecuted(ActionExecutedContext context) {
+         response = context.HttpContext.Response;
+         string id = new Token(context.HttpContext.Request).id;
+         bool check = EmployeeManagement.IsEmployeeExist(id);
+
+         Console.WriteLine(check);
       }
    }
 }

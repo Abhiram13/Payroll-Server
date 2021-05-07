@@ -48,10 +48,12 @@ namespace System {
    public class Token {
       private string[] decodedToken;
       public string id;
+      public string password;
 
       public Token(HttpRequest request) {
          this.decodedToken = StringValue.Decode(request.Headers["Auth"]).Split(":");
          this.id = this.decodedToken[0];
+         this.password = this.decodedToken[1];
       }
    }
 }

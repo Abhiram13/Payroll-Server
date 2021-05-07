@@ -15,6 +15,7 @@ namespace Payroll_Server {
       [HttpGet]
       [Route("all")]
       [Authorise(roles:"Admin,HR")]
+      [Test]
       public string FetchAll() {
          Response.StatusCode = StatusCodes.Status200OK;
          return JSON.Serializer<List<string>>(
@@ -35,7 +36,7 @@ namespace Payroll_Server {
       public async Task<string> Add() {
          Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
 
-         if (EmployeeManagement.isRoleExist(requestBody.role)) {
+         if (EmployeeManagement.IsRoleExist(requestBody.role)) {
             Response.StatusCode = StatusCodes.Status304NotModified;
             return "Role has already been Added";
          }

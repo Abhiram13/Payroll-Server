@@ -1,7 +1,5 @@
 using System;
 using Npgsql;
-using System.Text.Json;
-using System.Collections.Generic;
 
 namespace Database {
    public delegate ReturnType Reader<ReturnType>(NpgsqlDataReader reader);
