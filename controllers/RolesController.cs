@@ -14,8 +14,7 @@ namespace Payroll_Server {
       
       [HttpGet]
       [Route("all")]
-      [Authorise(roles:"Admin,HR")]
-      [Test]
+      [Authorise(roles: "HR,Admin")]
       public string FetchAll() {
          Response.StatusCode = StatusCodes.Status200OK;
          return JSON.Serializer<List<string>>(

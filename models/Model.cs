@@ -26,4 +26,10 @@ namespace System {
       public string Message { get; set; }
       public int Status { get; set; }
    }
+
+   public class AuthoriseResponse {
+      public bool isvalid { get; set; }
+      public string message { get; set; }
+      public int statusCode { get; set; }
+   }
 }
