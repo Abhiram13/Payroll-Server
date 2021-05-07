@@ -38,14 +38,10 @@ namespace System {
          bool valid = true; int status = 200; string message = "";
 
          if (IsParameterAll()) {
-            if (doesEmployeeExist == false) {
-               valid = false; status = 404; message = "Employee do not exist";
-            }
-         } else if (IsRoleValid() == false) {
-            valid = false; status = 401; message = "You are not authorised";
-         }
+            if (doesEmployeeExist == false) valid = false; status = 404; message = "Employee do not exist";            
+         } else if (IsRoleValid() == false) valid = false; status = 401; message = "You are not authorised";
 
-         return new AuthoriseResponse() { isvalid = valid, message = message, statusCode = status,};
+         return new AuthoriseResponse() { isvalid = valid, message = message, statusCode = status };
       }
 
       public override void OnActionExecuted(ActionExecutedContext context) {
@@ -56,9 +52,7 @@ namespace System {
             response = context.HttpContext.Response;                        
             employee = EmployeeManagement.GetEmployee(id);            
 
-            if (!res.isvalid) {
-               Response(res.statusCode, res.message);
-            }
+            if (!res.isvalid) Response(res.statusCode, res.message);
 
          } catch (Exception e) {
             Response(404, $"Please provide Valid Token, {e.Message}");
