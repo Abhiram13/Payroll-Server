@@ -45,17 +45,20 @@ namespace System {
       }
 
       public override void OnActionExecuted(ActionExecutedContext context) {
+         response = context.HttpContext.Response;
          try {
             string id = new Token(context.HttpContext.Request).id;
             bool doesEmployeeExist = EmployeeManagement.IsEmployeeExist(id);
-            AuthoriseResponse res = isValid(doesEmployeeExist);
-            response = context.HttpContext.Response;                        
-            employee = EmployeeManagement.GetEmployee(id);            
+            employee = EmployeeManagement.GetEmployee(id);
+            AuthoriseResponse res = isValid(doesEmployeeExist);            
 
             if (!res.isvalid) Response(res.statusCode, res.message);
+            return;
 
          } catch (Exception e) {
+            Console.WriteLine(e);
             Response(404, $"Please provide Valid Token, {e.Message}");
+            return;
          }
       }
    }

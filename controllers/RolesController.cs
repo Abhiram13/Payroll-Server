@@ -16,14 +16,12 @@ namespace Payroll_Server {
       [Route("all")]
       [Authorise(roles: "HR,Admin")]
       public string FetchAll() {
-         Response.StatusCode = StatusCodes.Status200OK;
          return JSON.Serializer<List<string>>(
             Connection.Sql<List<string>>($"SELECT * FROM {Table.ROLES}", fetchRoles)
          );
 
          List<string> fetchRoles(NpgsqlDataReader reader) {
             List<string> listOfroles = new List<string>();
-
             while (reader.Read()) listOfroles.Add((string)reader[0]);
             return listOfroles;
          };

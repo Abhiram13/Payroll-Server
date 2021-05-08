@@ -22,7 +22,7 @@ namespace Payroll_Server {
       [Route("checkin")]
       [Authorise(roles:"all")]
       public string CheckIn() {
-         int xy = Connection.Sql<int>(
+         Connection.Sql<int>(
             $"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({new Token(Request).id}, '{Time.CurrentTime()}', '{currentDate}')",
             func
          );
@@ -31,6 +31,7 @@ namespace Payroll_Server {
       }
 
       [Route("checkout")]
+      [Authorise(roles: "all")]
       public string CheckOut() {
          UpdateCheckOut();
          return "Checked-Out";
