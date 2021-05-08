@@ -88,7 +88,7 @@ namespace NEmployee {
             supervisor = (long)reader[6],
             user_name = (string)reader[7]
          };
-      }
+      }      
 
       public static Employee GetEmployee(string id) {
          string query = $"SELECT * FROM {Table.EMPLOYEE} WHERE id = {id}";

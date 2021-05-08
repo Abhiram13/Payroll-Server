@@ -31,5 +31,10 @@ namespace Payroll_Server {
             return employeesList;
          }
       }
+
+      [HttpGet]
+      [Route("{id}")]
+      [Authorise(roles: "all")]
+      public Employee FetchEmployeeById(string id) => EmployeeManagement.GetEmployee(id);
    }
 }
