@@ -50,13 +50,12 @@ namespace System {
             string id = new Token(context.HttpContext.Request).id;
             bool doesEmployeeExist = EmployeeManagement.IsEmployeeExist(id);
             employee = EmployeeManagement.GetEmployee(id);
-            AuthoriseResponse res = isValid(doesEmployeeExist);            
+            AuthoriseResponse res = isValid(doesEmployeeExist);
 
             if (!res.isvalid) Response(res.statusCode, res.message);
             return;
 
          } catch (Exception e) {
-            Console.WriteLine(e);
             Response(404, $"Please provide Valid Token, {e.Message}");
             return;
          }

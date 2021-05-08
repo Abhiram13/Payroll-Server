@@ -97,18 +97,7 @@ namespace NEmployee {
 
          Employee func(NpgsqlDataReader reader) {
             while (reader.Read()) {
-               // return UpdateReaderDataToEmployee(reader);
-               return new Employee() {
-                  designation = (string)reader[5],
-                  email = (string)reader[4],
-                  first_name = (string)reader[1],
-                  id = (long)reader[0],
-                  last_name = (string)reader[2],
-                  mobile = (long)reader[3],
-                  password = (string)reader[8],
-                  supervisor = (long)reader[6],
-                  user_name = (string)reader[7]
-               };
+               return UpdateReaderDataToEmployee(reader);
             }
 
             return new Employee();
