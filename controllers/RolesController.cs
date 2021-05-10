@@ -38,7 +38,10 @@ namespace Payroll_Server {
             return "Role has already been Added";
          }
 
-         int roleCount = Connection.Sql<int>($"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')", rowsAffected);
+         int roleCount = Connection.Sql<int>(
+            $"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')", 
+            (reader) => reader.RecordsAffected
+         );
 
          if (roleCount > 0) {
             Response.StatusCode = StatusCodes.Status201Created;
@@ -47,8 +50,6 @@ namespace Payroll_Server {
 
          Response.StatusCode = StatusCodes.Status502BadGateway;
          return "Internal Error";
-
-         int rowsAffected(NpgsqlDataReader reader) => reader.RecordsAffected;
       }
    }
 }

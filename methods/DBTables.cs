@@ -6,16 +6,16 @@ namespace Database {
    }
 
    static class Roles {
-      public const string ALL = "All";
-      public const string ADMIN = "Admin";
-      public const string HR = "HR";
-      public const string APP_DEV = "Application Developer";
-      public const string SEN_APP_DEV = "Senior Application Developer";
-      public const string CEO = "Chief Exceutive Officer";
-      public const string CTO = "Chief Technical Officer";
-      public const string TL = "Team Leader";
-      public const string SL = "Sales Manager";
-      public const string PM = "Product Manager";
-      public const string TELECALLER = "Tele Caller";
+      public static readonly string ALL = "All";
+      public static readonly string ADMIN = "Admin";
+      public static readonly string HR = "HR";
+      public static readonly string APP_DEV = "Application Developer";
+      public static readonly string SEN_APP_DEV = "Senior Application Developer";
+      public static readonly string CEO = "Chief Exceutive Officer";
+      public static readonly string CTO = "Chief Technical Officer";
+      public static readonly string TL = "Team Leader";
+      public static readonly string SL = "Sales Manager";
+      public static readonly string PM = "Product Manager";
+      public static readonly string TELECALLER = "Tele Caller";
    }
 }

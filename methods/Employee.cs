@@ -12,25 +12,27 @@ using Database;
 namespace NEmployee {
    class EmployeeManagement {
       private static int Count(Employee employeeRequestBody) {
-         return Connection.Sql<int>($"SELECT id FROM {Table.EMPLOYEE}", check);
+         return Connection.Sql<int>(
+            $"SELECT id FROM {Table.EMPLOYEE}",
+            (reader) => {
+               List<long> list = new List<long>();
 
-         int check(Npgsql.NpgsqlDataReader reader) {
-            List<long> list = new List<long>();
-
-            while (reader.Read()) {
-               if (employeeRequestBody.id == (long)reader[0]) {
-                  list.Add((long)reader[0]);
+               while (reader.Read()) {
+                  if (employeeRequestBody.id == (long)reader[0]) {
+                     list.Add((long)reader[0]);
+                  }
                }
-            }
 
-            return list.Count;
-         }
+               return list.Count;
+            }
+         );
       }
 
       private static string Insert(string keys, string values) {
-         string func(NpgsqlDataReader reader) => (reader.RecordsAffected == 1) ? "Successfully Added" : "Not Added";
-
-         return Connection.Sql<string>($"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})", func);
+         return Connection.Sql<string>(
+            $"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})",
+            (reader) => (reader.RecordsAffected == 1) ? "Successfully Added" : "Not Added"
+         );
       }
       
       public static async Task<string> Add(HttpRequest Request) {
@@ -50,30 +52,27 @@ namespace NEmployee {
       public static async Task<string> Login(HttpRequest request) {
          Login login = await JSON.httpContextDeseriliser<Login>(request);
          string query = $"SELECT password, id, user_name FROM {Table.EMPLOYEE} WHERE id = {login.id} AND password = '{login.password}'";
-         return Connection.Sql<string>(query, check);
-
-         string check(NpgsqlDataReader reader) {
+         return Connection.Sql<string>(query, (reader) => {
             while (reader.Read()) {
                return StringValue.Encode($"'{reader[1]}': {reader[2]}");
             }
-            
+
             return "Employee Not Found";
-         }
+         });
       }
 
       public static bool IsRoleExist(string role) {
-         bool isRoleExist = Connection.Sql<bool>($"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{role}'", checkIfRoleExist);
-
-         bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
-
-         return isRoleExist;
+         return Connection.Sql<bool>(
+            $"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{role}'", 
+            (reader) => reader.HasRows
+         );
       }
 
       public static bool IsEmployeeExist(string id) {
-         bool isEmployeeExist = Connection.Sql<bool>($"SELECT id FROM {Table.EMPLOYEE} WHERE id = {id}", checkIfRoleExist);
-         bool checkIfRoleExist(NpgsqlDataReader reader) => reader.HasRows;
-
-         return isEmployeeExist;
+         return Connection.Sql<bool>(
+            $"SELECT id FROM {Table.EMPLOYEE} WHERE id = {id}",
+            (reader) => reader.HasRows
+         );
       }
 
       public static Employee UpdateReaderDataToEmployee(NpgsqlDataReader reader) {

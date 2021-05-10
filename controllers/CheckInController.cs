@@ -9,12 +9,10 @@ namespace Payroll_Server {
       private static DateTime date = DateTime.Now;
       private string currentDate = $"{date.Year}/{date.Month}/{date.Day}";
 
-      private int func(NpgsqlDataReader reader) => reader.RecordsAffected;
-
       private void UpdateCheckOut() {
          Connection.Sql<int>(
-            $"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {new Token(Request).id} AND date = '{currentDate}' AND check_out IS NULL", 
-            func
+            $"UPDATE {Table.LOGINS} SET check_out = '{Time.CurrentTime()}' WHERE id = {new Token(Request).id} AND date = '{currentDate}' AND check_out IS NULL",
+            (reader) => reader.RecordsAffected
          );
       }
 
@@ -24,7 +22,7 @@ namespace Payroll_Server {
       public string CheckIn() {
          Connection.Sql<int>(
             $"INSERT INTO {Table.LOGINS} (id, check_in, date) VALUES ({new Token(Request).id}, '{Time.CurrentTime()}', '{currentDate}')",
-            func
+            (reader) => reader.RecordsAffected
          );
 
          return "Checked-In";
