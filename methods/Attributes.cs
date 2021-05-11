@@ -1,9 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Database;
-using Npgsql;
 using NEmployee;
 
 namespace System {

@@ -1,31 +1,26 @@
 using System;
 using Npgsql;
-using System.Text.Json;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using System.IO;
-using NEmployee;
 using Database;
 
 namespace NEmployee {
-   class EmployeeManagement {
-      private static int Count(Employee employeeRequestBody) {
-         return Connection.Sql<int>(
-            $"SELECT id FROM {Table.EMPLOYEE}",
-            (reader) => {
-               List<long> list = new List<long>();
-
-               while (reader.Read()) {
-                  if (employeeRequestBody.id == (long)reader[0]) {
-                     list.Add((long)reader[0]);
-                  }
+   public class EmployeeManagement {
+      private static bool EmployeeExist(Employee employeeRequestBody) {
+         const string QUERY = "SELECT id FROM " + Table.EMPLOYEE;
+         
+         bool IsEmployeeExist(NpgsqlDataReader reader) {
+            while (reader.Read()) {
+               if (employeeRequestBody.id == (long)reader[0]) {
+                  return true;
                }
-
-               return list.Count;
             }
-         );
+
+            return false;
+         }
+
+         return Connection.Sql<bool>(QUERY, IsEmployeeExist);
       }
 
       private static string Insert(string keys, string values) {
@@ -39,7 +34,7 @@ namespace NEmployee {
          Employee employeeRequestBody = await JSON.httpContextDeseriliser<Employee>(Request);
          bool roleExist = IsRoleExist(employeeRequestBody.designation);
 
-         if (Count(employeeRequestBody) > 0) return "Employee already Existed";
+         if (EmployeeExist(employeeRequestBody)) return "Employee already Existed";
 
          if (!roleExist) return "Designation does not Exist";
 
