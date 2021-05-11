@@ -7,22 +7,6 @@ using Database;
 
 namespace NEmployee {
    public class EmployeeManagement {
-      private static bool EmployeeExist(Employee employeeRequestBody) {
-         const string QUERY = "SELECT id FROM " + Table.EMPLOYEE;
-         
-         bool IsEmployeeExist(NpgsqlDataReader reader) {
-            while (reader.Read()) {
-               if (employeeRequestBody.id == (long)reader[0]) {
-                  return true;
-               }
-            }
-
-            return false;
-         }
-
-         return Connection.Sql<bool>(QUERY, IsEmployeeExist);
-      }
-
       private static string Insert(string keys, string values) {
          return Connection.Sql<string>(
             $"INSERT INTO {Table.EMPLOYEE}({keys}) VALUES({values})",
@@ -34,7 +18,7 @@ namespace NEmployee {
          Employee employeeRequestBody = await JSON.httpContextDeseriliser<Employee>(Request);
          bool roleExist = IsRoleExist(employeeRequestBody.designation);
 
-         if (EmployeeExist(employeeRequestBody)) return "Employee already Existed";
+         if (IsEmployeeExist(employeeRequestBody.id.ToString())) return "Employee already Existed";
 
          if (!roleExist) return "Designation does not Exist";
 
@@ -47,6 +31,7 @@ namespace NEmployee {
       public static async Task<string> Login(HttpRequest request) {
          Login login = await JSON.httpContextDeseriliser<Login>(request);
          string query = $"SELECT password, id, user_name FROM {Table.EMPLOYEE} WHERE id = {login.id} AND password = '{login.password}'";
+
          return Connection.Sql<string>(query, (reader) => {
             while (reader.Read()) {
                return StringValue.Encode($"'{reader[1]}': {reader[2]}");
