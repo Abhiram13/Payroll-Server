@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace Payroll_Server {
    class LoginManager {
-      // verify whether given id exists
-      // if yes, then verify whether password if correct
-      // if yes, then create a token and authorise
       private static Login user;
 
       private static bool VerifyUserId() {
@@ -21,8 +18,12 @@ namespace Payroll_Server {
          return Connection.Sql<bool>(QUERY, (reader) => reader.HasRows);
       }
 
-      private static void UnAuthoriseUser() {
+      private static string UnAuthoriseUser() {
+         if (!VerifyPassword()) {
+            return "Employee password do not match";
+         }
 
+         return "Employee does not Exist";
       }
 
       public async static Task<string> Login(HttpRequest requestBody) {
@@ -32,7 +33,7 @@ namespace Payroll_Server {
             return StringValue.Encode($"{user.id}: {user.password}");
          }
 
-         return "";
+         return UnAuthoriseUser();
       }
    }
 }
