@@ -16,7 +16,7 @@ namespace Payroll_Server {
 
       [HttpPost]
       [Route("login")]
-      public async Task<string> Login() => await EmployeeManagement.Login(Request);
+      public async Task<string> Login() => await LoginManager.Login(Request);
 
       [HttpPost]
       [Route("signup")]

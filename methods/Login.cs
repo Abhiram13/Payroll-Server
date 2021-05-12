@@ -14,7 +14,7 @@ namespace Payroll_Server {
       }
 
       private static bool VerifyPassword() {
-         string QUERY = $"SELECT id FROM {Table.EMPLOYEE} WHERE id = {user.id} AND password = {user.password}";
+         string QUERY = $"SELECT id FROM {Table.EMPLOYEE} WHERE id = {user.id} AND password = '{user.password}'";
          return Connection.Sql<bool>(QUERY, (reader) => reader.HasRows);
       }
 
