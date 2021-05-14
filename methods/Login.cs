@@ -5,7 +5,7 @@ using Npgsql;
 using System.Threading.Tasks;
 
 namespace Payroll_Server {
-   class LoginManager {
+   static class LoginManager {
       private static Login user;
 
       private static bool VerifyUserId() {
@@ -36,4 +36,15 @@ namespace Payroll_Server {
          return UnAuthoriseUser();
       }
    }
+
+   // class SignInManager {
+   //    // check if required values are provided
+   //    // notify user when required fields are empty or wrong
+   //    // if all are okay, then create user
+   //    private static Employee employee;
+
+   //    public static async void SignIn(HttpRequest request) {
+   //       employee = await JSON.httpContextDeseriliser<Employee>(request);
+   //    }
+   // }
 }

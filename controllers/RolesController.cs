@@ -45,7 +45,7 @@ namespace Payroll_Server {
 
          if (roleCount > 0) {
             Response.StatusCode = StatusCodes.Status201Created;
-            return "Role Successfully Added";
+            return $"{requestBody.role} Role Successfully Added";
          }
 
          Response.StatusCode = StatusCodes.Status502BadGateway;

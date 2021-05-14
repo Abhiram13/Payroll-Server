@@ -13,7 +13,7 @@ namespace System {
 
       public AuthoriseAttribute(string roles) => Roles = roles.Split(",");
 
-      private void Response(int statuCode, string message) {
+      private void Response(int statuCode, string message) {         
          response.StatusCode = statuCode;
          response.WriteAsync(message);
       }
@@ -35,7 +35,7 @@ namespace System {
          bool valid = true; int status = 200; string message = "";
 
          if (IsParameterAll()) {
-            if (doesEmployeeExist == false) valid = false; status = 404; message = "Employee do not exist";            
+            if (doesEmployeeExist == false) valid = false; status = 404; message = "Employee do not exist";
          } else if (IsRoleValid() == false) valid = false; status = 401; message = "You are not authorised";
 
          return new AuthoriseResponse() { isvalid = valid, message = message, statusCode = status };

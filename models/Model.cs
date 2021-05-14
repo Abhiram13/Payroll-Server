@@ -11,6 +11,7 @@ namespace System {
       public long supervisor { get; set; }
       public long mobile { get; set; }
       public long id { get; set; }
+      public long salary { get; set; }
    }
 
    public class Login {
