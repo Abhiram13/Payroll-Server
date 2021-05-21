@@ -28,19 +28,6 @@ namespace NEmployee {
          return Insert(keys, values);
       }
 
-      public static async Task<string> Login(HttpRequest request) {
-         Login login = await JSON.httpContextDeseriliser<Login>(request);
-         string query = $"SELECT password, id, user_name FROM {Table.EMPLOYEE} WHERE id = {login.id} AND password = '{login.password}'";
-
-         return Connection.Sql<string>(query, (reader) => {
-            while (reader.Read()) {
-               return StringValue.Encode($"'{reader[1]}': {reader[2]}");
-            }
-
-            return "Employee Not Found";
-         });
-      }
-
       public static bool IsRoleExist(string role) {
          return Connection.Sql<bool>(
             $"SELECT role FROM {Table.ROLES} WHERE role ILIKE '{role}'", 
