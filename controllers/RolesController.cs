@@ -7,49 +7,47 @@ using Database;
 using Npgsql;
 using System.Collections.Generic;
 
-namespace Payroll_Server {   
+namespace Payroll_Server {
+	[Route("api/roles")]
+	public class RolesController : Controller, IRoleController {
+		[HttpGet]
+		[Route("all")]
+		[Authorise(roles: "HR,Admin")]
+		public string FetchAll() {
+			return JSON.Serializer<List<string>>(
+			   Connection.Sql<List<string>>($"SELECT * FROM {Table.ROLES}", fetchRoles)
+			);
 
-   [Route("api/roles")]
-   public class RolesController : Controller, IRoleController {
-      
-      [HttpGet]
-      [Route("all")]
-      [Authorise(roles: "HR,Admin")]
-      public string FetchAll() {
-         return JSON.Serializer<List<string>>(
-            Connection.Sql<List<string>>($"SELECT * FROM {Table.ROLES}", fetchRoles)
-         );
+			List<string> fetchRoles(NpgsqlDataReader reader) {
+				List<string> listOfroles = new List<string>();
+				while (reader.Read()) listOfroles.Add((string)reader[0]);
+				return listOfroles;
+			};
+		}
+            
+		[HttpPost]
+		[Route("add")]
+		[Authorise(roles: "Admin,HR")]
+		public async Task<string> Add() {
+			Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
 
-         List<string> fetchRoles(NpgsqlDataReader reader) {
-            List<string> listOfroles = new List<string>();
-            while (reader.Read()) listOfroles.Add((string)reader[0]);
-            return listOfroles;
-         };
-      }
+			if (EmployeeManagement.IsRoleExist(requestBody.role)) {
+				Response.StatusCode = StatusCodes.Status304NotModified;
+				return "Role has already been Added";
+			}
 
-      [HttpPost]
-      [Route("add")]
-      [Authorise(roles: "Admin,HR")]
-      public async Task<string> Add() {
-         Role requestBody = await JSON.httpContextDeseriliser<Role>(Request);
+			int roleCount = Connection.Sql<int>(
+			   $"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')",
+			   (reader) => reader.RecordsAffected
+			);
 
-         if (EmployeeManagement.IsRoleExist(requestBody.role)) {
-            Response.StatusCode = StatusCodes.Status304NotModified;
-            return "Role has already been Added";
-         }
+			if (roleCount > 0) {
+				Response.StatusCode = StatusCodes.Status201Created;
+				return $"{requestBody.role} Role Successfully Added";
+			}
 
-         int roleCount = Connection.Sql<int>(
-            $"INSERT INTO {Table.ROLES} (role) VALUES ('{requestBody.role}')", 
-            (reader) => reader.RecordsAffected
-         );
-
-         if (roleCount > 0) {
-            Response.StatusCode = StatusCodes.Status201Created;
-            return $"{requestBody.role} Role Successfully Added";
-         }
-
-         Response.StatusCode = StatusCodes.Status502BadGateway;
-         return "Internal Error";
-      }
-   }
+			Response.StatusCode = StatusCodes.Status502BadGateway;
+			return "Internal Error";
+		}
+	}
 }

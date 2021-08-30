@@ -4,22 +4,20 @@ using System.Threading.Tasks;
 using NEmployee;
 
 namespace Payroll_Server {
+	[Route("")]
+	public class HomeController : Controller, IHomeController {
+		[HttpGet]
+		[HttpPost]
+		[HttpPut]
+		[HttpDelete]
+		public string Method() => "Welcome to Payroll";
 
-   [Route("")]
-   public class HomeController : Controller, IHomeController {
+		[HttpPost]
+		[Route("login")]
+		public async Task<string> Login() => await LoginManager.Login(Request);
 
-      [HttpGet]
-      [HttpPost]
-      [HttpPut]
-      [HttpDelete]
-      public string Method() => "Welcome to Payroll";
-
-      [HttpPost]
-      [Route("login")]
-      public async Task<string> Login() => await LoginManager.Login(Request);
-
-      [HttpPost]
-      [Route("signup")]
-      public async Task<string> Signup() => await EmployeeManagement.Add(Request);
-   }
+		[HttpPost]
+		[Route("signup")]
+		public async Task<string> Signup() => await EmployeeManagement.Add(Request);
+	}
 }
